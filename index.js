@@ -50,7 +50,7 @@ app.post('/', (req, res) => {
 
   const resOptions = {
     headers: {
-      'Content-Type': 'application/download'
+      'Content-Type': 'application/octet-stream'
     }
   };
 
