@@ -65,9 +65,9 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: [
+          body: JSON.stringify([
             calendarEvent
-          ]
+          ])
         };
 
         fetch(window.API_PATH, requestOptions);
