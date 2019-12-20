@@ -50,7 +50,8 @@ app.post('/', (req, res) => {
 
   const resOptions = {
     headers: {
-      'Content-Type': 'application/octet-stream'
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': 'attachment; filename=\"calendar.ics\"'
     }
   };
 
