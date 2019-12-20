@@ -51,7 +51,9 @@ app.post('/', (req, res) => {
   const resOptions = {
     headers: {
       'Content-Type': 'application/octet-stream',
-      'Content-Disposition': 'attachment; filename=\"calendar.ics\"'
+      'Content-Disposition': 'attachment; filename=calendar.ics',
+      'Expires': '0',
+      'Cache-Control': 'must-revalidate, post-check=0, pre-check=0'
     }
   };
 
