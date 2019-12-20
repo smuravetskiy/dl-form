@@ -48,9 +48,15 @@ app.post('/', (req, res) => {
   const filePath = `${__dirname}/${fileName}.ics`;
   writeFileSync(filePath, value);
 
+  const resOptions = {
+    headers: {
+      'Content-Type': 'application/download'
+    }
+  };
+
   res
     .status(200)
-    .sendFile(filePath);
+    .sendFile(filePath, resOptions);
 });
 
 app.listen(
