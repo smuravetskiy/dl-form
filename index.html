@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: beige;
+        color: teal;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .main {
+        height: 500px;
+        width: 600px;
+        border-radius: 8px;
+        border: 1px solid lightslategray;
+      }
+
+      .eventForm {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      input {
+        margin: 20px 0;
+        width: 60%;
+        height: 32px;
+        font-size: 20px;
+        border-radius: 8px;
+      }
+
+      label {
+        font-size: 20px;
+      }
+
+      .submitButton {
+        background-color: lightseagreen;
+        color: beige;
+        height: 40px;
+      }
+    </style>
+    <script type="text/javascript">
+      window.API_PATH = "https://secure-fortress-38124.herokuapp.com/";
+
+      function getValue(id) {
+        const el = document.getElementById(id);
+        return el.value;
+      }
+
+      function onEventSubmit(evt) {
+        evt.preventDefault();
+
+        const calendarEvent = {
+          start: getValue("start"),
+          title: getValue("title"),
+          description: getValue("description")
+        };
+
+        const requestOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: [
+            calendarEvent
+          ]
+        };
+
+        fetch(window.API_PATH, requestOptions);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="main">
+      <form id="evtForm" method="post" class="eventForm">
+        <h1>Create calendar event</h1>
+        <label for="start">Pick a date</label>
+        <input type="datetime" name="eventDate" id="start">
+        <label for="title">Name an event</label>
+        <input type="text" name="eventSummary" id="title">
+        <label for="descr">Describe an event</label>
+        <input type="text" name="eventDescription" id="description">
+        <input type="submit" value="Create Event" class="submitButton">
+      </form>
+    </div>
+    <script>
+      (function() {
+        const form = document.getElementById("evtForm");
+        form.addEventListener("submit", onEventSubmit);
+      })()
+    </script>
+  </body>
+</html>

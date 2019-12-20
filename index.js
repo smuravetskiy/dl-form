@@ -2,10 +2,10 @@ const ics = require('ics');
 const uuid = require('uuid');
 const moment = require('moment');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const express = require('express');
 
 const app = express();
-
 
 const formatDate = ({ start }) => {
   const m = new moment(start);
@@ -18,6 +18,7 @@ const formatDate = ({ start }) => {
   ];
 };
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
