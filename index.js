@@ -23,12 +23,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/', (req, res) => {
-  console.log('!!!', req.body, typeof req.body)
-
-  evts = JSON.parse(
-    req.body
-  );
-
   const { error, value } = ics.createEvents(
     evts.map(evt => ({
       ...evt,
