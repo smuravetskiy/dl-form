@@ -43,6 +43,8 @@
         height: 40px;
       }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript">
       window.API_PATH = "https://secure-fortress-38124.herokuapp.com/";
 
@@ -59,6 +61,8 @@
           title: getValue("title"),
           description: getValue("description")
         };
+
+        console.log("ARRR", calendarEvent)
 
         const requestOptions = {
           method: 'POST',
@@ -79,7 +83,7 @@
       <form id="evtForm" method="post" class="eventForm">
         <h1>Create calendar event</h1>
         <label for="start">Pick a date</label>
-        <input type="datetime" name="eventDate" id="start">
+        <input type="text" name="eventDate" id="start" autocomplete="off">
         <label for="title">Name an event</label>
         <input type="text" name="eventSummary" id="title">
         <label for="descr">Describe an event</label>
@@ -91,6 +95,9 @@
       (function() {
         const form = document.getElementById("evtForm");
         form.addEventListener("submit", onEventSubmit);
+
+        const picker = document.getElementById("start");
+        window.Picker = flatpickr(picker, { enableTime: true });
       })()
     </script>
   </body>

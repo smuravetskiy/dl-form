@@ -1,3 +1,4 @@
+const { writeFileSync } = require("fs");
 const ics = require('ics');
 const uuid = require('uuid');
 const moment = require('moment');
