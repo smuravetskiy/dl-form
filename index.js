@@ -45,11 +45,12 @@ app.post('/', (req, res) => {
   }
 
   const fileName = uuid.v4();
-  writeFileSync(`${__dirname}/${fileName}.ics`, value);
+  const filePath = `${__dirname}/${fileName}.ics`;
+  writeFileSync(filePath, value);
 
   res
     .status(200)
-    .sendFile(fileName);
+    .sendFile(filePath);
 });
 
 app.listen(
