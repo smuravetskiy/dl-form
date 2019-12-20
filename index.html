@@ -43,47 +43,13 @@
         height: 40px;
       }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script type="text/javascript">
-      window.API_PATH = "https://secure-fortress-38124.herokuapp.com/";
-
-      function getValue(id) {
-        const el = document.getElementById(id);
-        return el.value;
-      }
-
-      function onEventSubmit(evt) {
-        evt.preventDefault();
-
-        const calendarEvent = {
-          start: getValue("start"),
-          title: getValue("title"),
-          description: getValue("description")
-        };
-
-        console.log("ARRR", calendarEvent)
-
-        const requestOptions = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify([
-            calendarEvent
-          ])
-        };
-
-        fetch(window.API_PATH, requestOptions);
-      }
-    </script>
   </head>
   <body>
     <div class="main">
-      <form id="evtForm" method="post" class="eventForm">
+      <form id="evtForm" method="post" class="eventForm" novalidate>
         <h1>Create calendar event</h1>
         <label for="start">Pick a date</label>
-        <input type="text" name="eventDate" id="start" autocomplete="off">
+        <input type="datetime-local" name="eventDate" id="start" value="" autocomplete="off">
         <label for="title">Name an event</label>
         <input type="text" name="eventSummary" id="title">
         <label for="descr">Describe an event</label>
@@ -91,13 +57,46 @@
         <input type="submit" value="Create Event" class="submitButton">
       </form>
     </div>
-    <script>
+    <script type="text/javascript">
       (function() {
+        window.API_PATH = "https://secure-fortress-38124.herokuapp.com/";
+        // local dev
+        // window.API_PATH = "http://localhost:3000";
+
+        function getValue(id) {
+          const el = document.getElementById(id);
+          return el.value;
+        }
+
+        function onEventSubmit(evt) {
+          evt.preventDefault();
+
+          const calendarEvent = {
+            start: getValue("start"),
+            title: getValue("title"),
+            description: getValue("description")
+          };
+
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([
+              calendarEvent
+            ])
+          };
+
+          fetch(window.API_PATH, requestOptions)
+            .then(response => response.text())
+            .then((path) => window.open(`${window.API_PATH}/public/${path}`));
+        }
+
         const form = document.getElementById("evtForm");
         form.addEventListener("submit", onEventSubmit);
 
         const picker = document.getElementById("start");
-        window.Picker = flatpickr(picker, { enableTime: true });
+        picker.value = new Date().toISOString().slice(0, -5)
       })()
     </script>
   </body>
