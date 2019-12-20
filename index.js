@@ -24,6 +24,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/', (req, res) => {
   evts = req.body;
+
+  console.log('EVTS', evts)
+
   const { error, value } = ics.createEvents(
     evts.map(evt => ({
       ...evt,
