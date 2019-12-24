@@ -1,4 +1,4 @@
-const { writeFileSync } = require("fs");
+const { writeFileSync, existsSync, mkdirSync } = require("fs");
 const ics = require('ics');
 const uuid = require('uuid');
 const moment = require('moment');
@@ -23,6 +23,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const publicDir = 'public';
+
+if (!existsSync(publicDir)) {
+  mkdirSync(publicDir);
+}
+
 app.post('/', (req, res) => {
   const evts = req.body;
 
@@ -42,25 +48,18 @@ app.post('/', (req, res) => {
     res
       .status(400)
       .send(error);
+
+    return
   }
 
-  const fileName = uuid.v4();
-  const filePath = `${__dirname}/${fileName}.ics`;
-  writeFileSync(filePath, value);
+  const fileName = `${uuid.v4()}.ics`;
+  writeFileSync(`${__dirname}/${publicDir}/${fileName}`, value);
 
-  const resOptions = {
-    headers: {
-      'Content-Type': 'text/calendar',
-      'Content-Disposition': 'attachment; filename=calendar.ics',
-      'Expires': '0',
-      'Cache-Control': 'must-revalidate, post-check=0, pre-check=0'
-    }
-  };
-
-  res
-    .status(200)
-    .sendFile(filePath, resOptions);
+  res.send(fileName);
 });
+
+app.get('/public/:path', ({ params: { path } }, res) => res.download(`${__dirname}/${publicDir}/${path}`))
+app.get('/', (req, res) => res.sendFile(`${__dirname}/index.html`));
 
 app.listen(
   process.env.PORT,
