@@ -11,7 +11,7 @@
       }
 
       .main {
-        height: 500px;
+        min-height: 500px;
         width: 600px;
         border-radius: 8px;
         border: 1px solid lightslategray;
@@ -35,56 +35,86 @@
 
       label {
         font-size: 20px;
+        display: inline-block;
+        min-width: 160px;
       }
 
-      .submitButton {
+      ul {
+        list-style: none;
+      }
+
+      li {
+        padding-bottom: 20px;
+        border-bottom: 1px solid lightslategray;
+      }
+
+      button {
+        border-color: transparent;
         background-color: lightseagreen;
         color: beige;
         height: 40px;
+        min-width: 200px;
+        margin: 10px 0;
       }
     </style>
   </head>
   <body>
-    <div class="main">
+    <ul class="main">
       <form id="evtForm" method="post" class="eventForm" novalidate>
         <h1>Create calendar event</h1>
-        <label for="start">Pick a date</label>
-        <input type="datetime-local" name="eventDate" id="start" value="" autocomplete="off">
-        <label for="title">Name an event</label>
-        <input type="text" name="eventSummary" id="title">
-        <label for="descr">Describe an event</label>
-        <input type="text" name="eventDescription" id="description">
-        <input type="submit" value="Create Event" class="submitButton">
+        <ul id="eventsList"></ul>
+        <button type="button" id="addEvent">Add Event</button>
+        <button type="submit" class="submitButton">Download Event</button>
       </form>
     </div>
+
     <script type="text/javascript">
       (function() {
         window.API_PATH = "https://secure-fortress-38124.herokuapp.com/";
         // local dev
         // window.API_PATH = "http://localhost:3000";
 
-        function getValue(id) {
-          const el = document.getElementById(id);
-          return el.value;
+        const eventsPlaceholder = document.querySelector('#eventsList')
+        const eventsTemplate = `
+          <div>
+            <label for="start">Pick a date</label>
+            <input type="datetime-local" name="eventDate" class="start" value="" autocomplete="off">
+          </div>
+          <div>
+            <label for="title">Name an event</label>
+            <input type="text" name="eventSummary" class="title">
+          </div>
+          <div>
+            <label for="descr">Describe an event</label>
+            <input type="text" name="eventDescription" class="description">
+          </div>
+        `
+
+        function getValue(el) {
+          return function (id) {
+            return el.querySelector(id).value;
+          }
         }
 
         function onEventSubmit(evt) {
           evt.preventDefault();
+          const calendarEvent = []
 
-          const calendarEvent = {
-            start: getValue("start"),
-            title: getValue("title"),
-            description: getValue("description")
-          };
+          eventsPlaceholder.childNodes.forEach(function(item) {
+            const currentItemValue = getValue(item)
+            calendarEvent.push({
+              start: currentItemValue(".start"),
+              title: currentItemValue(".title"),
+              description: currentItemValue(".description")
+            })
+          });
 
           const requestOptions = {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify([
-              calendarEvent
-            ])
+            body: JSON.stringify(calendarEvent)
           };
 
           fetch(window.API_PATH, requestOptions)
@@ -92,11 +122,22 @@
             .then((path) => window.open(`${window.API_PATH}/public/${path}`));
         }
 
+        function addEvent() {
+          const li = document.createElement('li')
+          li.innerHTML = eventsTemplate
+          eventsPlaceholder.appendChild(li)
+
+          const picker = eventsPlaceholder.querySelectorAll(".start");
+          picker[picker.length - 1].value = new Date().toISOString().slice(0, -5)
+        }
+
         const form = document.getElementById("evtForm");
         form.addEventListener("submit", onEventSubmit);
 
-        const picker = document.getElementById("start");
-        picker.value = new Date().toISOString().slice(0, -5)
+        const addEventButton = document.getElementById("addEvent")
+        addEventButton.addEventListener("click", addEvent)
+
+        addEvent()
       })()
     </script>
   </body>

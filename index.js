@@ -12,7 +12,7 @@ const formatDate = ({ start }) => {
   const m = new moment(start);
   return [
     m.year(),
-    m.month(),
+    m.month() + 1,
     m.date(),
     m.hour(),
     m.minute()
@@ -30,20 +30,18 @@ if (!existsSync(publicDir)) {
 }
 
 app.post('/', (req, res) => {
-  const evts = req.body;
+  const evts = req.body.map(evt => ({
+    ...evt,
+    start: formatDate(evt),
+    duration: {
+      hours: 1
+    },
+    status: 'CONFIRMED',
+    busyStatus: 'BUSY',
+  }))
 
-  const { error, value } = ics.createEvents(
-    evts.map(evt => ({
-      ...evt,
-      start: formatDate(evt),
-      duration: {
-        hours: 1
-      },
-      status: 'CONFIRMED',
-      busyStatus: 'BUSY',
-    }))
-  );
-
+  const { error, value } = ics.createEvents(evts);
+  
   if (error) {
     res
       .status(400)
