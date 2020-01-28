@@ -1,0 +1,144 @@
+<html>
+  <head>
+    <style>
+      body {
+        background-color: beige;
+        color: teal;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .main {
+        min-height: 500px;
+        width: 600px;
+        border-radius: 8px;
+        border: 1px solid lightslategray;
+      }
+
+      .eventForm {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      input {
+        margin: 20px 0;
+        width: 60%;
+        height: 32px;
+        font-size: 20px;
+        border-radius: 8px;
+      }
+
+      label {
+        font-size: 20px;
+        display: inline-block;
+        min-width: 160px;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      li {
+        padding-bottom: 20px;
+        border-bottom: 1px solid lightslategray;
+      }
+
+      button {
+        border-color: transparent;
+        background-color: lightseagreen;
+        color: beige;
+        height: 40px;
+        min-width: 200px;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="main">
+      <form id="evtForm" method="post" class="eventForm" novalidate>
+        <h1>Create calendar event</h1>
+        <ul id="eventsList"></ul>
+        <button type="button" id="addEvent">Add Event</button>
+        <button type="submit" class="submitButton">Download Event</button>
+      </form>
+    </div>
+
+    <script type="text/javascript">
+      (function() {
+        window.API_PATH = "https://secure-fortress-38124.herokuapp.com";
+        // local dev
+        // window.API_PATH = "http://localhost:3000";
+
+        const eventsPlaceholder = document.querySelector('#eventsList')
+        const eventsTemplate = `
+          <div>
+            <label for="start">Pick a date</label>
+            <input type="datetime-local" name="eventDate" class="start" value="" autocomplete="off">
+          </div>
+          <div>
+            <label for="title">Name an event</label>
+            <input type="text" name="eventSummary" class="title">
+          </div>
+          <div>
+            <label for="descr">Describe an event</label>
+            <input type="text" name="eventDescription" class="description">
+          </div>
+        `
+
+        function getValue(el) {
+          return function (id) {
+            return el.querySelector(id).value;
+          }
+        }
+
+        function onEventSubmit(evt) {
+          evt.preventDefault();
+          const calendarEvent = []
+
+          eventsPlaceholder.childNodes.forEach(function(item) {
+            const currentItemValue = getValue(item)
+            calendarEvent.push({
+              start: currentItemValue(".start"),
+              title: currentItemValue(".title"),
+              description: currentItemValue(".description")
+            })
+          });
+
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(calendarEvent)
+          };
+
+          fetch(window.API_PATH, requestOptions)
+            .then(response => response.text())
+            .then((path) => window.open(`${window.API_PATH}/public/${path}`));
+        }
+
+        function addEvent() {
+          const li = document.createElement('li')
+          li.innerHTML = eventsTemplate
+          eventsPlaceholder.appendChild(li)
+
+          const picker = eventsPlaceholder.querySelectorAll(".start");
+          picker[picker.length - 1].value = new Date().toISOString().slice(0, -5)
+        }
+
+        const form = document.getElementById("evtForm");
+        form.addEventListener("submit", onEventSubmit);
+
+        const addEventButton = document.getElementById("addEvent")
+        addEventButton.addEventListener("click", addEvent)
+
+        addEvent()
+      })()
+    </script>
+  </body>
+</html>
