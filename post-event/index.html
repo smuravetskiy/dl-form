@@ -1,0 +1,34 @@
+<!-- https://developer.mozilla.org/ru/docs/Web/HTML -->
+<html>
+
+<head>
+    <link rel="stylesheet" href="./style.css">
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6cQpkMmhov7aC_KrnWgEVwTprdr1oMNg&libraries=places"></script>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="main">
+        <!-- https://developer.mozilla.org/ru/docs/Web/HTML/Element/form -->
+        <form id="evtForm" method="post" class="eventForm" novalidate>
+            <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements -->
+            <h1>Input coordinates (x,y)</h1>
+            <!-- https://developer.mozilla.org/ru/docs/Web/HTML/Element/%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D0%B0 -->
+            <button id="get-coordiantes" type="button">Get Coordinates</button>
+            <label for="shirota"> широта </label>
+            <!-- https://developer.mozilla.org/ru/docs/Web/HTML/Element/Input -->
+            <input id="shirota" type="number" value="" />
+            <label for="dolgota"> долгота </label>
+            <input id="dolgota" type="number" value="" />
+            <label for="R"> radius </label>
+            <input id="radius" type="number" min="0" value="100" />
+            <input type="submit" value="find places" />
+            <!-- https://developer.mozilla.org/ru/docs/Web/HTML/Element/textarea -->
+            <textarea name="Info" id="rawData" cols="80" rows="20"></textarea>
+        </form>
+    </div>
+</body>
+<script type="text/javascript" src="./script.js"></script>
+
+</html>
