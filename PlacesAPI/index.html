@@ -78,6 +78,7 @@
       }
       function callback(results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
+          document.getElementById('rawData').value = '';
           for (var i = 0; i < results.length; i++) {
             var place = results[i];
             document.getElementById('rawData').value += '\n' + `Place #${i + 1}: ` + JSON.stringify(results[i]) + '\n';
