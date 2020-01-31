@@ -60,6 +60,6 @@ app.get('/public/:path', ({ params: { path } }, res) => res.download(`${__dirnam
 app.get('/', (req, res) => res.sendFile(`${__dirname}/index.html`));
 
 app.listen(
-  process.env.PORT,
+  2227,
   () => console.log(`Example app listening on port ${process.env.PORT}!`)
 );
