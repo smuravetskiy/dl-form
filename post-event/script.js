@@ -28,12 +28,16 @@
     }
 
     function callback(results, status) {
+        console.log(status, google.maps.places.PlacesServiceStatus.OK)
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             document.getElementById('rawData').value = '';
           
             for (var i = 0; i < results.length; i++) {
+                const place = results[i];
                 // Строки-шаблоны https://learn.javascript.ru/es-string
-                document.getElementById('rawData').value += `Place #${i + 1}: ${JSON.stringify(place, null, 2)}\n`;
+                document
+                .getElementById('rawData')
+                .value += `Place #${i + 1}: ${JSON.stringify(place, null, 2)}\n`;
             }
         }
     }

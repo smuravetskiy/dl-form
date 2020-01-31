@@ -14,7 +14,7 @@ fetch('https://swapi.co/api/people/')
         const fields = ["name", "height", "mass", "hair_color", "skin_color", "eye_color", "birth_year", "gender"]
 
         for (let i = 0; i < fields.length; i++) {
-            // createElement https://developer.mozilla.org/ru/docs/DOM/document.appendChild
+            // createElement https://developer.mozilla.org/ru/docs/DOM/document.createElement
             const th = document.createElement('th')
             th.innerText = fields[i]
             // appendChild https://developer.mozilla.org/ru/docs/Web/API/Node/appendChild
