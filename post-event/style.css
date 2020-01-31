@@ -1,0 +1,43 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: beige;
+    color: rgb(202, 109, 33);
+    padding: calc((100vh - 518px) / 2) 0;
+}
+
+.main {
+    margin: auto;
+    height: 500px;
+    width: 600px;
+    border-radius: 8px;
+    border: 1px solid lightslategray;
+}
+
+.eventForm {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+input {
+    margin: 20px 0;
+    width: 60%;
+    height: 32px;
+    font-size: 20px;
+    border-radius: 8px;
+}
+
+label {
+    font-size: 20px;
+}
+
+.submitButton {
+    background-color: lightseagreen;
+    color: beige;
+    height: 40px;
+}
