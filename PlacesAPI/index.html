@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <style>
+      html {
+        height: 100%;
+      }
+
+      body {
+        background-color: beige;
+        color: rgb(202, 109, 33);
+        padding: calc((100vh - 518px) / 2) 0;
+      }
+
+      .main {
+        margin: auto;
+        height: 500px;
+        width: 600px;
+        border-radius: 8px;
+        border: 1px solid lightslategray;
+      }
+
+      .eventForm {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      input {
+        margin: 20px 0;
+        width: 60%;
+        height: 32px;
+        font-size: 20px;
+        border-radius: 8px;
+      }
+
+      label {
+        font-size: 20px;
+      }
+
+      .submitButton {
+        background-color: lightseagreen;
+        color: beige;
+        height: 40px;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6cQpkMmhov7aC_KrnWgEVwTprdr1oMNg&libraries=places"
+    ></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="main">
+      <form id="evtForm" method="post" class="eventForm" novalidate>
+        <h1>Input coordinates (x,y)</h1>
+        <label for="shirota"> широта </label>
+        <input id="shirota" type="number" value="46.4825" />
+        <label for="dolgota"> долгота </label>
+        <input id="dolgota" type="number" value="30.7233" />
+        <label for="R"> radius </label>
+        <input id="radius" type="number" min="0" value="100" />
+        <input type="submit" value="find places" />
+        <textarea name="Info" id="rawData" cols="100" rows="20"></textarea>
+      </form>
+    </div>
+  </body>
+  <script type="text/javascript">
+    (function() {
+      window.API_PATH = "https://secure-fortress-38124.herokuapp.com";
+      // local dev
+      // window.API_PATH = "http://localhost:3000";
+
+      function getValue(id) {
+        const el = document.getElementById(id);
+        return el.value;
+      }
+      function callback(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            var place = results[i];
+            document.getElementById('rawData').value += '\n' + `Place #${i + 1}: ` + JSON.stringify(results[i]) + '\n';
+          }
+        }
+      }
+      function onEventSubmit(evt) {
+        evt.preventDefault();
+
+        var place = new google.maps.LatLng(
+          getValue("shirota"),
+          getValue("dolgota")
+        );
+
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: place,
+          zoom: 15
+        });
+
+        var request = {
+          location: place,
+          radius: getValue("radius"),
+          type: ["restaurant"]
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(request, callback);
+      }
+
+      const form = document.getElementById("evtForm");
+      form.addEventListener("submit", onEventSubmit);
+    })();
+  </script>
+</html>
