@@ -8,3 +8,4 @@ How to launch calendar event project:
 3. Run 'npm i'
 4. Run 'npm start'
 5. Application will be available under the following url: http://localhost:2227/
+
