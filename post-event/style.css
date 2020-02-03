@@ -6,11 +6,13 @@ body {
     background-color: beige;
     color: rgb(202, 109, 33);
     padding: calc((100vh - 518px) / 2) 0;
+    display: flex;
+    flex-direction: column;
+
 }
 
 .main {
     margin: auto;
-    height: 500px;
     width: 600px;
     border-radius: 8px;
     border: 1px solid lightslategray;
