@@ -67,7 +67,7 @@
         service.nearbySearch(request, callback);
     }
 
-    // events https://learn.javascript.ru/introduction-browser-events
+    //events https://learn.javascript.ru/introduction-browser-events
     document.getElementById("evtForm").addEventListener("submit", onEventSubmit);
     document.getElementById('get-coordiantes').addEventListener('click', getCoordiantes)
 })();
