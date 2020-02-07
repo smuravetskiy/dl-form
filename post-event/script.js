@@ -29,16 +29,19 @@
 
     function callback(results, status) {
         console.log(status, google.maps.places.PlacesServiceStatus.OK)
+        let proverochka = results.length
+        if (proverochka == 0){
+            alert("Места не найдены :(")
+        }
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             document.getElementById('rawData').value = '';
-          
-            for (var i = 0; i < results.length; i++) {
+            results.forEach(function(item, i, results) {
                 const place = results[i];
-                // Строки-шаблоны https://learn.javascript.ru/es-string
+                a = results[i]
                 document
                 .getElementById('rawData')
                 .value += `Place #${i + 1}: ${JSON.stringify(place, null, 2)}\n`;
-            }
+            });
         }
     }
 
@@ -67,7 +70,7 @@
         service.nearbySearch(request, callback);
     }
 
-    //events https://learn.javascript.ru/introduction-browser-events
+    // events https://learn.javascript.ru/introduction-browser-events
     document.getElementById("evtForm").addEventListener("submit", onEventSubmit);
     document.getElementById('get-coordiantes').addEventListener('click', getCoordiantes)
 })();
