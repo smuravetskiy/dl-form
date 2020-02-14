@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Open Monument Map</title>
+  <style>
+      label {
+          display: block;
+      }
+  </style>
+</head>
+
+<body>
+  <h1>Open Monument Map</h1>
+  <h2>Add new Monument</h2>
+  <form method="post" action="/monuments/add">
+    <label for="name">Name <input type="text" name="name"></label>
+    <label for="name">Description <input type="text" name="description"></label>
+    <label for="name">Address <input type="text" name="address"></label>
+    <label for="name">Date <input type="date" name="date"></label>
+    <label for="name">Monument View <input type="text" name="monumentView"></label>
+    <label for="name">Registry Number <input type="text" name="registryNumber"></label>
+    <input type="submit" value="Add">
+  </form>
+  <h4>Items:</h4>
+  <ul>
+    <% items.forEach(function(item) { %>
+      <li>
+          <pre>
+        <%- JSON.stringify(item, null, 2) %>
+    </pre>
+      </li>
+      <% }); %>
+  </ul>
+</body>
+
+</html>
