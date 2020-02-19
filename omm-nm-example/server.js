@@ -8,6 +8,7 @@ const port = 3000;
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 mongoose
   .connect(
@@ -19,19 +20,50 @@ mongoose
 
 const Monument = require('./models/Monument');
 
-app.get('/', (req, res) => {
+app.get('/', function (req, res) {
+  res.render('index')
+});
+
+app.get('/api/monuments', function (req, res) {
   Monument.find()
-    .then(items => res.render('index', { items }))
+    .then(items => res.json(items))
     .catch(err => {
-        console.error(err)
-        res.status(404).json({ msg: 'No items found' })
+      res.status(500).send('Something Wrong!')
+      console.log(err)
     });
 });
 
-app.post('/monuments/add', (req, res) => {
+
+app.get('/api/monuments/:id', function (req, res) {
+  Monument
+    .find({ _id: req.params.id })
+    .then(item => res.json(item))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
+});
+
+app.post('/api/monuments', (req, res) => {
   const newMonument = new Monument(req.body);
 
-  newMonument.save().then(() => res.redirect('/'));
+  newMonument
+    .save()
+    .then((item) => res.json(item))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
 });
+
+app.delete('/api/monuments/:id', function (req, res) {
+  Monument
+    .deleteOne({ _id: req.params.id })
+    .then(() => res.send(200))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
+})
 
 app.listen(port, () => console.log('Server running...'));
