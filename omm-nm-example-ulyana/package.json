@@ -1,0 +1,21 @@
+{
+  "name": "omm-nm-example",
+  "version": "1.0.0",
+  "description": "omm-nm-example",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.0"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.2"
+  }
+}

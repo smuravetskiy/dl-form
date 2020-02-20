@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Open Monument Map</title>
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Open Monument Map</h1>
+<h2>Add new Monument</h2>
+<form id="addMonument">
+    <label>Name
+        <input type="text" id="name" name="name">
+    </label>
+    <label>Description
+        <input type="text" id="description" name="description">
+    </label>
+    <label>Address
+        <input type="text" id="address" name="address">
+    </label>
+    <label>Date
+        <input type="date" id="date" name="date">
+    </label>
+    <label>Monument View
+        <input type="text" id="monumentView" name="monumentView">
+    </label>
+    <label>Registry Number
+        <input type="text" id="registryNumber" name="registryNumber">
+    </label>
+    <button type="submit">Add</button>
+</form>
+
+<h4>Items:</h4>
+<table id="list">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Address</th>
+        <th>Date</th>
+        <th>Monument View</th>
+        <th>Registry Number</th>
+    </tr>
+</table>
+</body>
+
+<script>
+  (function () {
+    const table = document.getElementById("list");
+
+    const monumentTemplate = function (item) {
+      return `
+                <td>${item.name}</td>
+                <td>${item.description}</td>
+                <td>${item.address}</td>
+                <td>${item.date}</td>
+                <td>${item.monumentView}</td>
+                <td>${item.registryNumber}</td>
+                <td><button type=button data-id="${item._id}">Delete</button></td>
+                <td><button type=button data-id="${item._id}">Update</button></td>
+            `
+    };
+
+    function addMonument(item) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = monumentTemplate(item);
+      table.appendChild(tr)
+    }
+
+    function updateMonument(item) {
+      console.log('Update monument')
+    }
+
+    fetch('/api/monuments')
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (items) {
+        for (i = 0; i < items.length; i++) {
+          addMonument(items[i])
+        }
+      })
+      .catch(function (err) {
+        console.error(err)
+      });
+
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+
+    function onEventSubmit(evt) {
+      evt.preventDefault();
+
+      fetch('/api/monuments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: getValue('name'),
+          description: getValue('description'),
+          address: getValue('address'),
+          date: getValue('date'),
+          monumentView: getValue('monumentView'),
+          registryNumber: getValue('registryNumber')
+        })
+      })
+        .then(function (response) {
+          return response.json()
+        })
+        .then(function (monument) {
+          addMonument(monument);
+          console.log('Success!')
+        })
+        .catch(function (err) {
+          console.error(err)
+        });
+    }
+
+
+    const form = document.getElementById("addMonument");
+    form.addEventListener("submit", onEventSubmit);
+
+    table.addEventListener('click', function (event) {
+      if (event.target.type !== 'button') return;
+      if (event.target.innerText === 'Delete') {
+        fetch(`api/monuments/${event.target.dataset.id}`, {
+          method: 'DELETE',
+        })
+          .then(function () {
+            document.location.reload();
+          })
+          .catch(function (err) {
+            console.log(err)
+          })
+      }
+    });
+
+    table.addEventListener('click', function (event) {
+      if (event.target.type !== 'button') return;
+      if (event.target.innerText === 'Update') {
+
+        window.open(
+          `localhost:3000/api/monuments/update/${event.target.dataset.id}`,
+          '_blank' // <- This is what makes it open in a new window.
+        );
+        // fetch(`api/monuments/${event.target.dataset.id}`, {
+        //   method: 'PUT',
+        // })
+        //   .then(function () {
+        //     console.log('Client: It works!')
+        //   })
+        //   .catch(function (err) {
+        //     console.log(err)
+        //   })
+      }
+
+    })
+  })();
+</script>
+
+</html>
