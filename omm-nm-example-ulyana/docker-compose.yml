@@ -1,0 +1,25 @@
+version: '3'
+services:
+  app:
+    container_name: omm-1
+    restart: always
+    command: npm run start
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - /src/app
+      - /src/app/node_modules
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    environment:
+      - PORT=3000
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - '27017:27017'
