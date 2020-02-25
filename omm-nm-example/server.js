@@ -28,20 +28,29 @@ app.get('/api/monuments', function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.status(500).json({message: `Something Wrong!:${err}`})
       console.log(err)
     });
 });
 
-
 app.get('/api/monuments/:id', function (req, res) {
   Monument
     .find({ _id: req.params.id })
-    .then(item => res.json(item))
+    .then(item => res.json(item[0]))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.status(500).json({message: `Something Wrong!:${err}`})
       console.log(err)
     });
+});
+
+app.put('/api/monuments/:id', function (req, res) {
+  Monument 
+    .update({_id: req.params.id}, req.body)
+    .then((item) => res.json(item))
+    .catch(err => {
+      res.status(500).json({message: `Something Wrong!:${err}`})
+      console.log(err)
+    })
 });
 
 app.post('/api/monuments', (req, res) => {
@@ -51,7 +60,7 @@ app.post('/api/monuments', (req, res) => {
     .save()
     .then((item) => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.status(500).json({message: `Something Wrong!:${err}`})
       console.log(err)
     });
 });
@@ -61,7 +70,7 @@ app.delete('/api/monuments/:id', function (req, res) {
     .deleteOne({ _id: req.params.id })
     .then(() => res.send(200))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.status(500).json({message: `Something Wrong!:${err}`})
       console.log(err)
     });
 })
