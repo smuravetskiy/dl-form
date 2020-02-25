@@ -36,6 +36,7 @@
             <input type="text" id="registryNumber" name="registryNumber">
         </label>
         <button type="submit">Add</button>
+        <button type="reset">Reset</button>
     </form>
     <h4>Items:</h4>
     <table id="list">
@@ -53,28 +54,29 @@
 <script>
     (function () {
         const table = document.getElementById("list")
+        const form = document.getElementById("addMonument");
+        let editingItem = null
 
-        const monumentTemplate = function (item) {
-            return `
-                <td>${item.name}</td>
-                <td>${item.description}</td>
-                <td>${item.address}</td>
-                <td>${item.date}</td>
-                <td>${item.monumentView}</td>
-                <td>${item.registryNumber}</td>
-                <td><button type=button data-id="${item._id}">X</button></td>
-            `
-        }
+        form.addEventListener("submit", onEventSubmit);
+        form.addEventListener("reset", resetForm)
 
-        function addMonument(item) {
-            const tr = document.createElement('tr')
-            tr.innerHTML = monumentTemplate(item)
-            table.appendChild(tr)
-        }
+        table.addEventListener('click', function (event) {
+            if (event.target.className === 'delete') {
+                deleteItem(event.target.dataset.id)
+            }
+            if (event.target.className === 'edit') {
+                editItem(event.target.dataset.id)
+            }
+        })
 
         fetch('/api/monuments')
             .then(function (response) {
-                return response.json()
+                const data = response.json()
+                if (response.ok) {
+                    return data
+                } else {
+                    throw new Error(data.message);
+                }
             })
             .then(function (items) {
                 for (i = 0; i < items.length; i++) {
@@ -85,55 +87,172 @@
                 console.error(err)
             })
 
+        function monumentTemplate(item) {
+            return `
+                <td>${item.name}</td>
+                <td>${item.description}</td>
+                <td>${item.address}</td>
+                <td>${item.date}</td>
+                <td>${item.monumentView}</td>
+                <td>${item.registryNumber}</td>
+                <td><button type="button" class="delete" data-id="${item._id}">X</button></td>
+                <td><button type="button" class="edit" data-id="${item._id}">E</button></td>
+            `
+        }
+
+        function addMonument(item) {
+            const tr = document.createElement('tr')
+            tr.id = item._id
+            tr.innerHTML = monumentTemplate(item)
+
+            table.appendChild(tr)
+        }
+
         function getValue(id) {
             return document.getElementById(id).value;
         }
 
-        function onEventSubmit(evt) {
-            evt.preventDefault();
+        function setValue(id, str) {
+            document.getElementById(id).value = str
+        }
 
+        function toggleButtonText(isEditState)  {
+            const text = form.querySelector('button[type="submit"]').firstChild;
+            text.data = isEditState ? "Update" : "Add";
+        }
+
+        function createMonument(params) {
             fetch('/api/monuments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    name: getValue('name'),
-                    description: getValue('description'),
-                    address: getValue('address'),
-                    date: getValue('date'),
-                    monumentView: getValue('monumentView'),
-                    registryNumber: getValue('registryNumber')
-                })
+                body: JSON.stringify(params)
             })
                 .then(function (response) {
+                    if (!response.ok) {
+                        throw response
+                    }
                     return response.json()
                 })
                 .then(function (monument) {
                     addMonument(monument)
                     console.log('Success!')
                 })
-                .catch(function (err) {
-                    console.error(err)
+                .catch(function (response) {
+                    response.json()
+                        .then(function (err) {
+                            console.error(err.message)
+                        })
                 });
         }
 
-        
-        const form = document.getElementById("addMonument");
-        form.addEventListener("submit", onEventSubmit);
+        function updateMonument(params, id) {
+            fetch(`api/monuments/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                })
+                .then(function () {
+                    document.getElementById(id).innerHTML = monumentTemplate(params)
+                    console.log('Success!')
+                })
+                .catch(function (response) {
+                    response.json()
+                        .then(function (err) {
+                            console.error(err.message)
+                        })
+                });
+        }
 
-        table.addEventListener('click', function (event) {
-            if (event.target.type !== 'button') return
-            fetch(`api/monuments/${event.target.dataset.id}`, {
+        function onEventSubmit(evt) {
+            evt.preventDefault();
+
+            const body = {
+                name: getValue('name'),
+                description: getValue('description'),
+                address: getValue('address'),
+                date: getValue('date'),
+                monumentView: getValue('monumentView'),
+                registryNumber: getValue('registryNumber')
+            }
+
+            if (editingItem) {
+                updateMonument(body, editingItem)
+            } else {
+                createMonument(body)
+            }
+
+            resetForm()
+        }
+
+        function resetForm() {
+            setValue('name', '')
+            setValue('description', '')
+            setValue('address', '')
+            setValue('date', null)
+            setValue('monumentView', '')
+            setValue('registryNumber', '')
+
+            editingItem = null
+            toggleButtonText(editingItem)
+        }
+
+        function deleteItem(id) {
+            fetch(`api/monuments/${id}`, {
                 method: 'DELETE',
             })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                })
                 .then(function () {
-                    document.location.reload();
+                    table.removeChild(document.getElementById(id))
                 })
-                .catch(function (err) {
-                    console.log(err)
+                .catch(function (response) {
+                    response.json()
+                        .then(function (err) {
+                            console.error(err.message)
+                        })
+                });
+        }
+
+        function editItem(id) {
+            fetch(`api/monuments/${id}`, {
+                method: 'GET',
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw response
+                    }
+                    return response.json()
                 })
-        })
+                .then(function (item) {
+                    setValue('name', item.name)
+                    setValue('description', item.description)
+                    setValue('address', item.address)
+                    setValue('date', item.date)
+                    setValue('monumentView', item.monumentView)
+                    setValue('registryNumber', item.registryNumber)
+
+                    editingItem = item._id
+                    toggleButtonText(editingItem)
+                })
+                .catch(function (response) {
+                    response.json()
+                        .then(function (err) {
+                            console.error(err.message)
+                        })
+                });
+        }
     })();
 </script>
 
