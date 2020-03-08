@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Open Monument Map</title>
+    <style>
+        label {
+            display: block;
+        }
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h4>Items:</h4>
+    <div class="table table-bordered">
+        <table id="list" class="table">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Address</th>
+                <th>Date</th>
+                <th>Monument View</th>
+                <th>Registry Number</th>
+                <th>Delete buttons</th>
+                <th>Edit buttons</th>
+            </tr>
+        </table>
+    </div>
+    <a href="/create" id="home_back">Add</a>
+</body>
+
+<script>
+    (function () {
+        const table = document.getElementById("list")
+
+        const monumentTemplate = function (item) {
+            return `
+                <td>${item.name}</td>
+                <td>${item.description}</td>
+                <td>${item.address}</td>
+                <td>${item.date}</td>
+                <td>${item.monumentView}</td>
+                <td>${item.registryNumber}</td>
+                <td><button type=button data-id="${item._id}">X</button></td>
+                <td><a href="/update/${item._id}">E<href></td>
+            `
+        }
+
+        function addMonument(item) {
+            const tr = document.createElement('tr')
+            tr.innerHTML = monumentTemplate(item)
+            table.appendChild(tr)
+        }
+
+        fetch('/api/monuments')
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (items) {
+                for (i = 0; i < items.length; i++) {
+                    addMonument(items[i])
+                }
+            })
+            .catch(function (err) {
+                console.error(err)
+            })
+
+        table.addEventListener('click', function (event) {
+            if (event.target.type !== 'button') return
+            fetch(`api/monuments/${event.target.dataset.id}`, {
+                method: 'DELETE',
+            })
+                .then(function () {
+                    document.location.reload();
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        })
+    })();
+</script>
+
+</html>

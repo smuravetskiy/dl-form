@@ -1,0 +1,138 @@
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Open Monument Map</title>
+    <style>
+        label {
+            display: block;
+        }
+        span {
+            color: red;
+            border: 1px solid red;
+        }
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Open Monument Map</h1>
+    <h2>Update Monument</h2>
+    <form class="form-horizontal" id="addMonument">
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
+          <div class="col-sm-10">
+            <input type="text" id="name" name="name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Description</label>
+          <div class="col-sm-10">
+            <input type="text" id="description" name="description">
+          </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Address</label>
+            <div class="col-sm-10">
+                <input type="text" id="address" name="address">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Address</label>
+            <div class="col-sm-10">
+                <input type="text" id="address" name="address">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Date</label>
+            <div class="col-sm-10">
+                <input type="date" id="date" name="date">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Monument View</label>
+            <div class="col-sm-10">
+                <input type="text" id="monumentView" name="monumentView">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Registry Number</label>
+            <div class="col-sm-10">
+                <input type="text" id="registryNumber" name="registryNumber">
+            </div>
+        </div>
+        <button type="submit">Edit</button>
+      </form>
+    <span id="error"></span>
+</body>
+
+<script>
+    (function () {
+        const table = document.getElementById("list")
+        const form = document.getElementById("addMonument");
+
+        form.addEventListener("submit", onEventSubmit);
+
+        fetch('/api/monuments/<%- id %>')
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (item) {
+                setValue('viewport', item.viewport)
+                setValue('name', item.name)
+                setValue('description', item.description)
+                setValue('address', item.address)
+                setValue('date', item.date)
+                setValue('monumentView', item.monumentView)
+                setValue('registryNumber', item.registryNumber)
+            })
+            .catch(function (err) {
+                console.error(err)
+            })
+
+        function getValue(id) {
+            return document.getElementById(id).value;
+        }
+
+        function setValue(id, value) {
+            document.getElementById(id).value = value
+        }
+
+        function onEventSubmit(evt) {
+            evt.preventDefault();
+
+            fetch('/api/monuments/<%- id %>', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: getValue('name'),
+                    description: getValue('description'),
+                    address: getValue('address'),
+                    date: getValue('date'),
+                    monumentView: getValue('monumentView'),
+                    registryNumber: getValue('registryNumber')
+                })
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw response
+                    } else {
+                        window.location.replace("/")
+                    }
+                })
+                .catch(function (response) {
+                    console.log(response)
+                    response.text().then(function(errMessage) {
+                        const span = document.getElementById('error')
+                        span.innerHTML = errMessage
+                        console.error(errMessage)
+                    })
+                console.log('<%- id %>')
+                });
+        }
+    })();
+</script>
