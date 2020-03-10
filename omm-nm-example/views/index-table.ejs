@@ -39,7 +39,21 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="container">
-                    <div class="row" id="list"></div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name:</th>
+                                <th>Description:</th>
+                                <th>Address:</th>
+                                <th>Date:</th>
+                                <th>Monument view:</th>
+                                <th>Registry number:</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="list"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -48,44 +62,29 @@
 
 <script>
     (function () {
-        const list = document.getElementById("list")
+        const table = document.getElementById("list")
 
         const monumentTemplate = function (item) {
             return `
-            <div class="thumbnail">
-                <img src="https://via.placeholder.com/250" alt="...">
-                <div class="caption">
-                    <h3>${item.name}</h3>
-                    <dl>
-                        <dt>Description:</dt>
-                        <dd>${item.description}</dd>
-
-                        <dt>Address:</dt>
-                        <dd>${item.address}</dd>
-
-                        <dt>Date:</dt>
-                        <dd>${item.date}</dd>
-
-                        <dt>Monument view:</dt>
-                        <dd>${item.monumentView}</dd>
-
-                        <dt>Registry number:</dt>
-                        <dd>${item.registryNumber}</dd>
-                    </dl>
-                    <p>
-                        <button class="btn btn-danger btn-sm" type=button data-id="${item._id}">X</button>
-                        <a class="btn btn-default btn-sm" href="/update/${item._id}">E<a>
-                    </p>
-                </div>
-            </div>
+            <td>${item.name}</td>
+            <td>${item.description}</td>
+            <td>${item.address}</td>
+            <td>${item.date}</td>
+            <td>${item.monumentView}</td>
+            <td>${item.registryNumber}</td>
+            <td>
+                <button class="btn btn-danger btn-xs" type=button data-id="${item._id}">X</button>
+            </td>
+            <td>
+                <a class="btn btn-default btn-xs" href="/update/${item._id}">E<a>
+            </td>
             `
         }
 
         function addMonument(item) {
-            const li = document.createElement('div')
-            li.innerHTML = monumentTemplate(item)
-            li.className = 'col-sm-4'
-            list.appendChild(li)
+            const tr = document.createElement('tr')
+            tr.innerHTML = monumentTemplate(item)
+            table.appendChild(tr)
         }
 
         fetch('/api/monuments')

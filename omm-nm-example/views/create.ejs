@@ -6,43 +6,89 @@
     <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Open Monument Map</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <style>
-        label {
-            display: block;
-        }
-        span {
-            color: red;
-            border: 1px solid red;
+        body {
+            padding-top: 70px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Open Monument Map</h1>
-    <h2>Add new Monument</h2>
-    <form id="addMonument">
-        <label>Name
-            <input type="text" id="name" name="name">
-        </label>
-        <label>Description
-            <input type="text" id="description" name="description">
-        </label>
-        <label>Address
-            <input type="text" id="address" name="address">
-        </label>
-        <label>Date
-            <input type="date" id="date" name="date">
-        </label>
-        <label>Monument View
-            <input type="text" id="monumentView" name="monumentView">
-        </label>
-        <label>Registry Number
-            <input type="text" id="registryNumber" name="registryNumber">
-        </label>
-        <button type="submit">Add</button>
-    </form>
-    <span id="error"></span>
-    <a href="/">Cancel</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <nav class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Home</a>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li class="active"><a href="/create">Create</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="page-header">
+                    <h1>Open Monument Map</h1>
+                    <h3>Add new Monument</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <form class="form-horizontal" id="addMonument">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Address</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="address" name="address">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Date</label>
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control" id="date" name="date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Monument View</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="monumentView" name="monumentView">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Registry Number</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="registryNumber" name="registryNumber">
+                        </div>
+                    </div>
+                    <p class="bg-danger" id="error"></p>
+                    <button class="btn btn-primary" type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -80,14 +126,14 @@
                 })
                 .catch(function (response) {
                     console.log(response)
-                    response.text().then(function(errMessage) {
+                    response.text().then(function (errMessage) {
                         const span = document.getElementById('error')
                         span.innerHTML = errMessage
                         console.error(errMessage)
                     })
                 });
         }
-        
+
         const form = document.getElementById("addMonument");
         form.addEventListener("submit", onEventSubmit);
     })();

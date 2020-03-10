@@ -1,12 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
+
 const Validate = require('./utils/validate')
 
 const app = express();
 const port = 3000;
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -24,6 +27,10 @@ const Monument = require('./models/Monument');
 // render
 app.get('/', function (req, res) {
   res.render('index')
+});
+
+app.get('/table', function (req, res) {
+  res.render('index-table')
 });
 
 app.get('/update/:id',function (req, res) {
