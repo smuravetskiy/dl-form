@@ -1,11 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -54,6 +56,26 @@ app.post('/api/monuments', (req, res) => {
       res.status(500).send('Something Wrong!')
       console.log(err)
     });
+});
+
+app.get('/update/:id',function (req, res) {
+  res.render('update', {id: req.params.id})
+});
+
+app.get('/create',function (req, res) {
+  res.render('create')
+});
+
+app.put('/api/monuments/:id', function (req, res) {
+  // нужно ли проверить id?
+  // нужно ли проверить есть ли name внутри req.body?
+  Monument
+    .update({_id: req.params.id}, req.body)
+    .then((item) => res.json(item))
+    .catch(err => {
+      res.status(500).send(`Something Wrong!:${err}`)
+      console.log(err)
+    })
 });
 
 app.delete('/api/monuments/:id', function (req, res) {

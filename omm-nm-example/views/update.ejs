@@ -1,0 +1,103 @@
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Update Monument Map</title>
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Update Monument Map</h1>
+
+        <form id="addMonument">
+            <label>Name
+                <input type="text" id="name" name="name">
+            </label>
+            <label>Description
+                <input type="text" id="description" name="description">
+            </label>
+            <label>Address
+                <input type="text" id="address" name="address">
+            </label>
+            <label>Date
+                <input type="date" id="date" name="date">
+            </label>
+            <label>Monument View
+                <input type="text" id="monumentView" name="monumentView">
+            </label>
+            <label>Registry Number
+                <input type="text" id="registryNumber" name="registryNumber">
+            </label>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+</body>
+
+<script>
+  (function () {
+    const form = document.getElementById("addMonument");
+    form.addEventListener("submit", onEventSubmit);
+    fetch('/api/monuments/<%- id %>')
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (response) {
+        const item = response[0];
+
+        setValue('viewport', item.viewport);
+        setValue('name', item.name);
+        setValue('description', item.description);
+        setValue('address', item.address);
+        setValue('date', item.date.substr(0, 10));
+        setValue('monumentView', item.monumentView);
+        setValue('registryNumber', item.registryNumber);
+      })
+      .catch(function (err) {
+        console.error(err)
+      });
+
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+    function setValue(id, value) {
+      document.getElementById(id).value = value
+    }
+    function onEventSubmit(evt) {
+      evt.preventDefault();
+      fetch('/api/monuments/<%- id %>', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: getValue('name'),
+          description: getValue('description'),
+          address: getValue('address'),
+          date: getValue('date'),
+          monumentView: getValue('monumentView'),
+          registryNumber: getValue('registryNumber')
+        })
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw response
+          } else {
+            window.location.replace("/")
+          }
+        })
+        .catch(function (response) {
+          console.log(response);
+          response.text().then(function (errMessage) {
+            const span = document.getElementById('error');
+            span.innerHTML = errMessage;
+            console.error(errMessage)
+          })
+        });
+    }
+  })();
+</script>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create Monument Map</title>
+    <style>
+        label {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <h1>Add New Monument</h1>
+    <form id="addMonument">
+        <label>Name
+            <input type="text" id="name" name="name">
+        </label>
+        <label>Description
+            <input type="text" id="description" name="description">
+        </label>
+        <label>Address
+            <input type="text" id="address" name="address">
+        </label>
+        <label>Date
+            <input type="date" id="date" name="date">
+        </label>
+        <label>Monument View
+            <input type="text" id="monumentView" name="monumentView">
+        </label>
+        <label>Registry Number
+            <input type="text" id="registryNumber" name="registryNumber">
+        </label>
+        <button type="submit">Add</button>
+    </form>
+</div>
+</body>
+
+<script>
+  (function () {
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+
+    function onEventSubmit(evt) {
+      evt.preventDefault();
+
+      fetch('/api/monuments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: getValue('name'),
+          description: getValue('description'),
+          address: getValue('address'),
+          date: getValue('date'),
+          monumentView: getValue('monumentView'),
+          registryNumber: getValue('registryNumber')
+        })
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw response
+          }
+          return response.json()
+        })
+        .then(function (monument) {
+          // addMonument(monument)
+          console.log('Success!')
+        })
+        .catch(function (response) {
+          console.log(response)
+          response.text().then(function (errMessage) {
+            const span = document.getElementById('error')
+            span.innerHTML = errMessage
+            console.error(errMessage)
+          })
+        });
+    }
+
+    const form = document.getElementById("addMonument");
+    form.addEventListener("submit", onEventSubmit);
+  })();
+</script>
+
+</html>
