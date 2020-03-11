@@ -29,8 +29,8 @@ app.get('/', function (req, res) {
   res.render('index')
 });
 
-app.get('/table', function (req, res) {
-  res.render('index-table')
+app.get('/copy', function (req, res) {
+  res.render('index_copy')
 });
 
 app.get('/update/:id',function (req, res) {

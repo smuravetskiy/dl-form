@@ -15,7 +15,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
+            <div class="col-lg-10 col-lg-offset-1">
                 <nav class="navbar navbar-default">
                     <div class="navbar-header">
                         <a class="navbar-brand" href="/">Home</a>
@@ -104,7 +104,7 @@
                 setValue('name', item.name)
                 setValue('description', item.description)
                 setValue('address', item.address)
-                setValue('date', item.date)
+                setValue('date', item.date.substr(0, 10))
                 setValue('monumentView', item.monumentView)
                 setValue('registryNumber', item.registryNumber)
             })

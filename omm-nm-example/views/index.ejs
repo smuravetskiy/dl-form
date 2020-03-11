@@ -10,13 +10,14 @@
         integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <style>
         body { padding-top: 70px; }
+        .img-responsive { width: 100% }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
+            <div class="col-lg-10 col-lg-offset-1">
                 <nav class="navbar navbar-default">
                     <div class="navbar-header">
                         <a class="navbar-brand" href="/">Home</a>
@@ -34,13 +35,8 @@
                     <h1>Open Monument Map</h1>
                     <h3>List of Monuments</h3>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="container">
-                    <div class="row" id="list"></div>
-                </div>
+
+                <div class="row" id="list"></div>
             </div>
         </div>
     </div>
@@ -52,39 +48,38 @@
 
         const monumentTemplate = function (item) {
             return `
-            <div class="thumbnail">
-                <img src="https://via.placeholder.com/250" alt="...">
-                <div class="caption">
-                    <h3>${item.name}</h3>
-                    <dl>
-                        <dt>Description:</dt>
-                        <dd>${item.description}</dd>
-
-                        <dt>Address:</dt>
-                        <dd>${item.address}</dd>
-
-                        <dt>Date:</dt>
-                        <dd>${item.date}</dd>
-
-                        <dt>Monument view:</dt>
-                        <dd>${item.monumentView}</dd>
-
-                        <dt>Registry number:</dt>
-                        <dd>${item.registryNumber}</dd>
-                    </dl>
-                    <p>
-                        <button class="btn btn-danger btn-sm" type=button data-id="${item._id}">X</button>
-                        <a class="btn btn-default btn-sm" href="/update/${item._id}">E<a>
-                    </p>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <img class="img-responsive" src="https://via.placeholder.com/250" alt="...">
+                        <h3>${item.name}</h3>
+                        <p>${item.description}</p>
+                        <p>
+                            <span>${item.monumentView}</span>
+                            <span>${item.registryNumber}</span>
+                        </p>
+                        <p>
+                            <span>${item.address}</span>
+                            <span>${item.date.substr(0, 10)}</span>
+                        </p>
+                        <p>
+                            <a class="btn btn-default btn-xs" href="/update/${item._id}">
+                                <span class="glyphicon glyphicon-cog"></span>
+                            </a>
+                            <button class="btn btn-danger btn-xs" type="button" data-id="${item._id}">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </p>
+                    </div>
                 </div>
-            </div>
             `
         }
 
         function addMonument(item) {
             const li = document.createElement('div')
+            item.date = item.date || ''
             li.innerHTML = monumentTemplate(item)
             li.className = 'col-sm-4'
+            li.id = item._id
             list.appendChild(li)
         }
 
@@ -101,13 +96,14 @@
                 console.error(err)
             })
 
-        table.addEventListener('click', function (event) {
+        list.addEventListener('click', function (event) {
             if (event.target.type !== 'button') return
             fetch(`api/monuments/${event.target.dataset.id}`, {
                 method: 'DELETE',
             })
                 .then(function () {
-                    document.location.reload();
+                    const toDelete = document.getElementById(event.target.dataset.id)
+                    toDelete.parentNode.removeChild(toDelete)
                 })
                 .catch(function (err) {
                     console.log(err)
