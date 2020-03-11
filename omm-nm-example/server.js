@@ -14,8 +14,11 @@ app.use(bodyParser.json());
 
 mongoose
   .connect(
-    'mongodb://mongo:27017/omm',
-    { useNewUrlParser: true }
+    'mongodb://heroku_z5840gr6:158ta0arltk3jo06nq7i7n2bgq@ds215219.mlab.com:15219/heroku_z5840gr6',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
   )
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));

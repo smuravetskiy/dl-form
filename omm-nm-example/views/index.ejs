@@ -6,48 +6,76 @@
     <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Open Monument Map</title>
-    <style>
-        label {
-            display: block;
-        }
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>.container-up{
+        margin-top: 25px;
+    }
     </style>
 </head>
 
 <body>
-    <h1>Open Monument Map</h1>
-    <h4>Items:</h4>
-    <table id="list">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Address</th>
-            <th>Date</th>
-            <th>Monument View</th>
-            <th>Registry Number</th>
-        </tr>
-    </table>
+<div class="container container-up"><nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Open Monument Map</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/create">Create</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    <div class="text-center">
+        <h1>Monuments List</h1>
+    </div>
+</div>
+    <div class="container">
+        <div class="row" id="list">
+
+        </div>
+    </div>
 </body>
 
 <script>
   (function () {
-    const table = document.getElementById("list");
+    const row = document.getElementById("list");
 
     const monumentTemplate = function (item) {
       return `
-                <td>${item.name}</td>
-                <td>${item.description}</td>
-                <td>${item.address}</td>
-                <td>${item.date}</td>
-                <td>${item.monumentView}</td>
-                <td>${item.registryNumber}</td>
-                <td><button type=button data-id="${item._id}">X</button></td>
+          <div class="card mb-4 shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+            <div class="card-body">
+              <p class="card-text">${check_data(item.name)}</p>
+              <p class="card-text">${check_data(item.address)}</p>
+              <p class="card-text">${check_data(item.description)}</p>
+              <p class="card-text">${check_data(item.monumentView)}</p>
+              <p class="card-text">${check_data(item.registryNumber)}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">
+                  <a href="/update/${item._id}">Edit</a>
+                  </button>
+                  <button type="button" data-delete="${item._id}" class="btn btn-sm btn-outline-secondary" id="deletebutton">Delete</button>
+                </div>
+                <small class="text-muted">${item.date || ''}</small>
+              </div>
+            </div>
+          </div>
             `
     };
 
     function addMonument(item) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = monumentTemplate(item);
-      table.appendChild(tr)
+      const div = document.createElement('div');
+      div.className = 'col-md-4';
+      div.innerHTML = monumentTemplate(item);
+      row.appendChild(div)
     }
 
     fetch('/api/monuments')
@@ -62,6 +90,26 @@
       .catch(function (err) {
         console.error(err)
       })
+    function check_data(string) {
+      if(typeof string==='string'){
+        return string
+      }
+      else{return "No data"}
+
+    }
+
+    row.addEventListener('click', function (event) {
+      if (event.target.type !== 'button' || !event.target.dataset.delete) return
+      fetch(`api/monuments/${event.target.dataset.delete}`, {
+        method: 'DELETE',
+      })
+        .then(function () {
+          document.location.reload();
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    })
   })();
 </script>
 
