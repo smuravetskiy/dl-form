@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Star wars test</title>
+    <style>
+        :root {
+            --main-bg-color: #2e2e2e;
+            --switch-default: #969696;
+            --saber-color: #e51115;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--main-bg-color);
+
+            cursor: none;
+        }
+
+        .lightsaber {
+            position: relative;
+            transform: rotate(-45deg);
+        }
+
+        .lightsaber label {
+            // Может убрать курсор и повесить клик на контейнер
+            cursor: pointer;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 88;
+            text-indent: -9999px;
+            width: 15px;
+            height: 50px;
+            border-bottom: solid 4px grey;
+            border-top: solid 5px grey;
+            border-radius: 5px;
+            background: rgb(226,226,226); /* Old browsers */
+            background: linear-gradient(to right, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* W3C */
+            background: -moz-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 50%, rgba(209,209,209,1) 51%, rgba(254,254,254,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(226,226,226,1)), color-stop(50%,rgba(219,219,219,1)), color-stop(51%,rgba(209,209,209,1)), color-stop(100%,rgba(254,254,254,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(left, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(left, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(left, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%); /* IE10+ */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=1 ); /* IE6-9 */
+        }
+
+        .lightsaber input[type=checkbox] {
+            opacity: 0;
+        }
+
+        .switch {
+            background: var(--switch-default);
+            width: 5px;
+            height: 10px;
+            display: block;
+            position: absolute;
+            bottom: 35px;
+            left: 13px;
+            transition: left 200ms;
+            border-radius: 10px;
+        }
+
+        .lightsaber .saber {
+            transition: height 300ms;
+            border-radius: 12px 12px 0 0;
+            position: absolute;
+            bottom: 55px;
+            left: 2px;
+            width: 10px;
+            display: block;
+            filter: blur(1px);
+            height: 0;
+        }
+
+        .lightsaber input[type=checkbox]:checked ~ div.saber {
+            height: 250px;
+        }
+
+        .lightsaber input[type=checkbox]:hover ~ div.switch {
+            background: #c09853;
+            left: 12px;
+        }
+
+        .lightsaber input[type=checkbox]:checked ~ div.switch {
+            background: var(--saber-color);
+        }
+
+        .vader {
+            background: linear-gradient(to right, var(--saber-color) 0%,rgb(254,254,254) 30%,rgb(254,254,254) 50%,rgb(254,254,254) 70%,#F44336 100%);
+            animation: glow 2s linear infinite;
+        }
+
+        @keyframes glow {
+            from {
+                color: var(--saber-color);
+                box-shadow: 0 0 9px var(--saber-color);
+            }
+            50% {
+                color: var(--saber-color);
+                box-shadow: 0 0 18px var(--saber-color);
+            }
+            to {
+                color: var(--saber-color);
+                box-shadow: 0 0 9px var(--saber-color);
+            }
+        }
+
+        #saber {
+            position: absolute;
+            transition: top 0.5s, left 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div id="saber" class="lightsaber">
+        <label for="yoda-example"></label>
+        <input type="checkbox" id="yoda-example" checked="checked">
+        <div class="switch"></div>
+        <div class="saber vader"></div>
+        <audio id="audio" src="./saberon.wav"></audio>
+    </div>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        let x = 0, y = 0;
+        const container = document.getElementById('saber');
+
+        function move() {
+          container.style.left = x + 'px';
+          container.style.top = y + 'px';
+        }
+
+        function play() {
+          const audio = document.getElementById("audio");
+          audio.play();
+        }
+
+        container.addEventListener("click", function(){
+          play()
+        });
+
+        document.addEventListener("mousemove", function (e) {
+          x = e.clientX;
+          y = e.clientY;
+        }, false);
+
+        setInterval(move, 100);
+      })
+    </script>
+</body>
+</html>
