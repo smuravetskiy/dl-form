@@ -10,6 +10,11 @@
             --saber-color: #e51115;
         }
 
+        *,
+        * + * {
+            cursor: none !important;
+        }
+
         html, body {
             height: 100%;
             width: 100%;
@@ -17,8 +22,6 @@
             justify-content: center;
             align-items: center;
             background-color: var(--main-bg-color);
-
-            cursor: none;
         }
 
         .lightsaber {
@@ -27,8 +30,6 @@
         }
 
         .lightsaber label {
-            // Может убрать курсор и повесить клик на контейнер
-            cursor: pointer;
             position: absolute;
             bottom: 0;
             left: 0;
@@ -112,43 +113,47 @@
 
         #saber {
             position: absolute;
-            transition: top 0.5s, left 0.5s;
         }
     </style>
 </head>
 <body>
     <div id="saber" class="lightsaber">
         <label for="yoda-example"></label>
-        <input type="checkbox" id="yoda-example" checked="checked">
+        <input type="checkbox" id="yoda-example">
         <div class="switch"></div>
         <div class="saber vader"></div>
-        <audio id="audio" src="./saberon.wav"></audio>
+        <audio id="on" src="./on.wav"></audio>
+        <audio id="move" src="./move.mp3"></audio>
+        <audio id="noise" src="./noise.mp3"></audio>
     </div>
     <script>
       window.addEventListener('DOMContentLoaded', function () {
-        let x = 0, y = 0;
         const container = document.getElementById('saber');
+        const noise = document.getElementById("noise")
+        const checkbox = document.getElementById('yoda-example')
+        const halfScreen = window.innerWidth / 2
+        
+        noise.loop = true
+        let isOn = false
 
-        function move() {
-          container.style.left = x + 'px';
-          container.style.top = y + 'px';
-        }
-
-        function play() {
-          const audio = document.getElementById("audio");
-          audio.play();
-        }
-
-        container.addEventListener("click", function(){
-          play()
+        document.getElementById('yoda-example').addEventListener("change", function(event) {
+            event.preventDefault()
+            isOn = !isOn
+            checkbox.checked = isOn
+            
+            if (isOn) {
+                document.getElementById("on").play()
+                noise.play()
+            } else {
+                noise.pause()
+            }
         });
 
         document.addEventListener("mousemove", function (e) {
-          x = e.clientX;
-          y = e.clientY;
+            container.style.transform = 'rotate(' + (halfScreen - e.clientX) * 0.1 + 'deg)'
+            container.style.left = e.clientX + 'px';
+            container.style.top = e.clientY + 'px';
         }, false);
-
-        setInterval(move, 100);
       })
     </script>
 </body>
